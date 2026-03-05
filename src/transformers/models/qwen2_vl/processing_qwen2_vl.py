@@ -170,12 +170,11 @@ class Qwen2VLProcessor(ProcessorMixin):
                 text[i] = text[i].replace("<|placeholder|>", self.video_token)
         
         ## merge the audios into one tensor
-        if audios in not None:
-            merge_length = 1500 #TODO: this is not correct
+        if audios is not None:
             index = 0
             for i in range(len(text)):
                 while self.audio_token in text[i]:
-                    audio_num_tokens = 1500
+                    audio_num_tokens = 1500 # constant because of whisper processing
                     text[i] = text[i].replace(self.audio_token, "<|placeholder|>" * num_audio_tokens, 1)
                     index += 1
                 text[i] = text[i].replace("<|placeholder|>", self.audio_token)
