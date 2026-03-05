@@ -61,9 +61,10 @@ class Qwen2VLProcessor(ProcessorMixin):
             in a chat into a tokenizable string.
     """
 
-    def __init__(self, image_processor=None, tokenizer=None, video_processor=None, chat_template=None, **kwargs):
+    def __init__(self, image_processor=None, tokenizer=None, video_processor=None, audio_processor=None, chat_template=None, **kwargs):
         self.image_token = "<|image_pad|>" if not hasattr(tokenizer, "image_token") else tokenizer.image_token
         self.video_token = "<|video_pad|>" if not hasattr(tokenizer, "video_token") else tokenizer.video_token
+        self.audio_token = "<|audio_pad|>" if not hasattr(tokenizer, "audio_token") else tokenizer.audio_token
         self.image_token_id = (
             tokenizer.image_token_id
             if getattr(tokenizer, "image_token_id", None)
@@ -74,7 +75,13 @@ class Qwen2VLProcessor(ProcessorMixin):
             if getattr(tokenizer, "video_token_id", None)
             else tokenizer.convert_tokens_to_ids(self.video_token)
         )
-        super().__init__(image_processor, tokenizer, video_processor, chat_template=chat_template)
+
+        self.audio_token_id = (
+            tokenizer.audio_token_id
+            if getattr(tokenizer, "audio_token_id", None)
+            else tokenizer.convert_tokens_to_ids(self.audio_token)
+
+        super().__init__(image_processor, tokenizer, video_processor, audio_processor, chat_template=chat_template)
 
     def __call__(
         self,
