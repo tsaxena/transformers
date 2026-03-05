@@ -80,6 +80,7 @@ class Qwen2VLProcessor(ProcessorMixin):
             tokenizer.audio_token_id
             if getattr(tokenizer, "audio_token_id", None)
             else tokenizer.convert_tokens_to_ids(self.audio_token)
+        )
 
         super().__init__(image_processor, tokenizer, video_processor, audio_processor, chat_template=chat_template)
 
