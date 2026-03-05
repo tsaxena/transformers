@@ -138,6 +138,10 @@ class Qwen2VLProcessor(ProcessorMixin):
         if videos is not None:
             videos_inputs = self.video_processor(videos=videos, **output_kwargs["videos_kwargs"])
             video_grid_thw = videos_inputs["video_grid_thw"]
+        
+        if audios is not None:
+            audios_inputs = self.audio_processor(audios)
+
 
         if not isinstance(text, list):
             text = [text]
@@ -163,6 +167,17 @@ class Qwen2VLProcessor(ProcessorMixin):
                     text[i] = text[i].replace(self.video_token, "<|placeholder|>" * num_video_tokens, 1)
                     index += 1
                 text[i] = text[i].replace("<|placeholder|>", self.video_token)
+        
+        ## merge the audios into one tensor
+        if audios in not None:
+            merge_length = 1500 #TODO: this is not correct
+            index = 0
+            for i in range(len(text)):
+                while self.audio_token in text[i]:
+                    audio_num_tokens = 1500
+                    text[i] = text[i].replace(self.audio_token, "<|placeholder|>" * num_audio_tokens, 1)
+                    index += 1
+                text[i] = text[i].replace("<|placeholder|>", self.audio_token)
 
         return_tensors = output_kwargs["text_kwargs"].pop("return_tensors", None)
         return_mm_token_type_ids = output_kwargs["text_kwargs"].pop("return_mm_token_type_ids", False)
