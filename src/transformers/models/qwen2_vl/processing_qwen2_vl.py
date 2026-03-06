@@ -144,7 +144,7 @@ class Qwen2VLProcessor(ProcessorMixin):
             video_grid_thw = videos_inputs["video_grid_thw"]
         
         if audios is not None:
-            audios_inputs = self.audio_processor(audios, sampling_rate=16000, return_tensors='pt')
+            audio_inputs = self.audio_processor(audios, sampling_rate=16000)
 
 
         if not isinstance(text, list):
