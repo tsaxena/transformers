@@ -134,6 +134,7 @@ class Qwen2VLProcessor(ProcessorMixin):
         )
 
         image_inputs = videos_inputs = {}
+        audio_inputs = {}
         if images is not None:
             image_inputs = self.image_processor(images=images, **output_kwargs["images_kwargs"])
             image_grid_thw = image_inputs["image_grid_thw"]
@@ -143,7 +144,7 @@ class Qwen2VLProcessor(ProcessorMixin):
             video_grid_thw = videos_inputs["video_grid_thw"]
         
         if audios is not None:
-            audios_inputs = self.audio_processor(audios)
+            audios_inputs = self.audio_processor(audios, sampling_rate=16000, return_tensors='pt')
 
 
         if not isinstance(text, list):
