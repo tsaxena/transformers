@@ -60,6 +60,7 @@ class Qwen2VLProcessor(ProcessorMixin):
         chat_template (`str`, *optional*): A Jinja template which will be used to convert lists of messages
             in a chat into a tokenizable string.
     """
+    attributes = ["image_processor", "tokenizer", "video_processor", "audio_processor"]  # add this
 
     def __init__(self, image_processor=None, tokenizer=None, video_processor=None, audio_processor=None, chat_template=None, **kwargs):
         self.image_token = "<|image_pad|>" if not hasattr(tokenizer, "image_token") else tokenizer.image_token
@@ -89,7 +90,7 @@ class Qwen2VLProcessor(ProcessorMixin):
         images: Optional[ImageInput] = None,
         text: Union[TextInput, PreTokenizedInput, list[TextInput], list[PreTokenizedInput]] = None,
         videos: Optional[VideoInput] = None,
-        audios: Optional[np.ndarray] = None,
+        audios = None, #Optional[np.ndarray] = None,
         **kwargs: Unpack[Qwen2VLProcessorKwargs],
     ) -> BatchFeature:
         """
@@ -176,7 +177,7 @@ class Qwen2VLProcessor(ProcessorMixin):
             for i in range(len(text)):
                 while self.audio_token in text[i]:
                     audio_num_tokens = 1500 # constant because of whisper processing
-                    text[i] = text[i].replace(self.audio_token, "<|placeholder|>" * num_audio_tokens, 1)
+                    text[i] = text[i].replace(self.audio_token, "<|placeholder|>" * audio_num_tokens, 1)
                     index += 1
                 text[i] = text[i].replace("<|placeholder|>", self.audio_token)
 
@@ -191,7 +192,7 @@ class Qwen2VLProcessor(ProcessorMixin):
             mm_token_type_ids[array_ids == self.image_token_id] = 1
             text_inputs["mm_token_type_ids"] = mm_token_type_ids.tolist()
 
-        return BatchFeature(data={**text_inputs, **image_inputs, **videos_inputs}, tensor_type=return_tensors)
+        return BatchFeature(data={**text_inputs, **image_inputs, **videos_inputs, **audio_inputs}, tensor_type=return_tensors)
 
     def _get_num_multimodal_tokens(self, image_sizes=None, video_sizes=None, **kwargs):
         """
