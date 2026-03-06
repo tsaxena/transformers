@@ -60,7 +60,8 @@ class Qwen2VLProcessor(ProcessorMixin):
         chat_template (`str`, *optional*): A Jinja template which will be used to convert lists of messages
             in a chat into a tokenizable string.
     """
-    attributes = ["image_processor", "tokenizer", "video_processor", "audio_processor"]  # add this
+    attributes = ["image_processor", "tokenizer", "video_processor"]  # add this
+    optional_attributrs = ["audio_processor"]
 
     def __init__(self, image_processor=None, tokenizer=None, video_processor=None, audio_processor=None, chat_template=None, **kwargs):
         self.image_token = "<|image_pad|>" if not hasattr(tokenizer, "image_token") else tokenizer.image_token
