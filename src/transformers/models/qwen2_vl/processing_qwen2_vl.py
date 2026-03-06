@@ -90,6 +90,7 @@ class Qwen2VLProcessor(ProcessorMixin):
         images: Optional[ImageInput] = None,
         text: Union[TextInput, PreTokenizedInput, list[TextInput], list[PreTokenizedInput]] = None,
         videos: Optional[VideoInput] = None,
+        audios: Optional[np.ndarray] = None,
         **kwargs: Unpack[Qwen2VLProcessorKwargs],
     ) -> BatchFeature:
         """
